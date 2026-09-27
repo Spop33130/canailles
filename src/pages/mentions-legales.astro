@@ -1,0 +1,92 @@
+---
+// Mentions légales exigées par la loi pour la confiance dans l'économie
+// numérique (LCEN, art. 6). Le site ne dépose aucun cookie et ne mesure
+// pas l'audience : il n'y a donc ni bandeau ni politique de cookies.
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+import BarreAppel from '../components/BarreAppel.astro';
+import { maison, societe } from '../data/maison';
+---
+
+<Base
+  titre="Mentions légales — Les Canailles, Bègles"
+  description="Éditeur, hébergeur et données personnelles du site des Canailles, bistrot à Bègles."
+  indexer={false}
+>
+  <EnTete />
+  <main class="legal page">
+    <h1>Mentions légales</h1>
+
+    <section>
+      <h2>Éditeur</h2>
+      <p>
+        {societe.raisonSociale}, {societe.forme}<br />
+        Siège social&nbsp;: {societe.siege}<br />
+        SIREN {societe.siren} — SIRET {societe.siret}<br />
+        Activité&nbsp;: {societe.naf}<br />
+        Téléphone&nbsp;: <a href={maison.telephone.lien}>{maison.telephone.affiche}</a>
+      </p>
+      <p>Directrice de la publication&nbsp;: {societe.gerante}, gérante.</p>
+    </section>
+
+    <section>
+      <h2>Hébergeur</h2>
+      <p>
+        Vercel Inc.<br />
+        440 N Barranca Ave #4133, Covina, CA 91723, États-Unis<br />
+        <a href="https://vercel.com" rel="noopener">vercel.com</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>Données personnelles et cookies</h2>
+      <p>
+        Ce site ne dépose aucun cookie, ne mesure pas l’audience et ne collecte aucune donnée personnelle&nbsp;: il
+        n’y a ni formulaire ni compte. Les réservations se font par téléphone.
+      </p>
+      <p>
+        Les boutons «&nbsp;Itinéraire&nbsp;» et «&nbsp;Instagram&nbsp;» ouvrent des services tiers (Google Maps,
+        Instagram) soumis à leurs propres conditions.
+      </p>
+    </section>
+
+    <section>
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        Le logo, les photographies et les textes de ce site appartiennent à {societe.raisonSociale} ou sont utilisés
+        avec l’accord de leurs auteurs. Toute reproduction sans autorisation est interdite.
+      </p>
+    </section>
+
+    <section>
+      <h2>Alcool</h2>
+      <p>L’abus d’alcool est dangereux pour la santé, à consommer avec modération.</p>
+    </section>
+  </main>
+  <PiedDePage />
+  <BarreAppel />
+</Base>
+
+<style>
+  .legal {
+    display: grid;
+    gap: var(--space-xl);
+    max-width: 44rem;
+    padding-block: calc(var(--banner-h) + var(--bar-h) + var(--space-2xl)) var(--space-3xl);
+  }
+
+  .legal h1 {
+    font-size: var(--text-4xl);
+  }
+
+  .legal h2 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-2xs);
+  }
+
+  .legal section {
+    display: grid;
+    gap: var(--space-xs);
+  }
+</style>

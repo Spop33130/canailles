@@ -1,0 +1,91 @@
+---
+// Premier écran : la devanture et l'équipe au grand soleil, puis la devise
+// du logo en grand et deux lignes pour dire qui on est.
+import Photo from './Photo.astro';
+import Statut from './Statut.astro';
+import devanture from '../assets/photos/01-devanture-equipe.jpg';
+import { maison } from '../data/maison';
+---
+
+<section class="accueil" aria-labelledby="accueil-titre">
+  <Photo
+    class="accueil__photo"
+    src={devanture}
+    prioritaire
+    cadrage="50% 42%"
+    legende={`${maison.adresse.ville}, boulevard Jean-Jacques Bosc`}
+    alt="L’équipe des Canailles, cinq personnes en chemise blanche, pose devant la devanture rouge du bistrot sous le store « Les Canailles »."
+  />
+
+  <div class="accueil__texte page">
+    <h1 id="accueil-titre"><span class="visually-hidden">Les Canailles, </span>Repère de canailles</h1>
+    <div class="accueil__cote">
+      <p class="accueil__chapo">
+        Un bistrot à la française tenu par Khadija et son fils Sabri. Le café dès 8&nbsp;h, le déjeuner, l’apéro — et le
+        jeudi, on reste jusqu’à 1&nbsp;h.
+      </p>
+      <Statut />
+      <p class="accueil__liens">
+        <a class="lien-fleche" href="#carte">Voir la carte</a>
+        <a class="lien-fleche" href="#venir">Horaires et accès</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .accueil {
+    padding-top: calc(var(--banner-h) + var(--bar-h));
+  }
+
+  /* Le premier écran garde un peu plus de hauteur que les autres photos. */
+  .accueil :global(.accueil__photo img) {
+    height: min(72svh, 66vw);
+    min-height: 18rem;
+  }
+
+  .accueil__texte {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: var(--space-xl);
+    align-items: end;
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .accueil__texte h1 {
+    font-size: var(--text-display);
+    line-height: 0.88;
+  }
+
+  .accueil__cote {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+    padding-bottom: var(--space-2xs);
+  }
+
+  .accueil__chapo {
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+    max-width: var(--measure);
+  }
+
+  .accueil__liens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-lg);
+  }
+
+  @media (max-width: 47.99rem) {
+    .accueil :global(.accueil__photo img) {
+      height: auto;
+      aspect-ratio: 4 / 3.4;
+    }
+
+    .accueil__texte {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding-block: var(--space-lg) var(--space-xl);
+    }
+  }
+</style>

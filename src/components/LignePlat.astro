@@ -1,0 +1,57 @@
+---
+// Une ligne de carte : le nom, des pointillés, le prix. Les pointillés
+// s'étirent pour aligner tous les prix sur la même colonne, comme sur
+// une vraie carte de bistrot.
+import { prixLisible } from '../data/carte';
+
+interface Props {
+  nom: string;
+  precision?: string;
+  prix: number;
+}
+
+const { nom, precision, prix } = Astro.props;
+---
+
+<li class="ligne">
+  <span class="ligne__nom">
+    {nom}
+    {precision && <small>{precision}</small>}
+  </span>
+  <span class="ligne__pointilles" aria-hidden="true"></span>
+  <span class="ligne__prix">{prixLisible(prix)}&nbsp;€</span>
+</li>
+
+<style>
+  .ligne {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+  }
+
+  .ligne__nom {
+    min-width: 0;
+  }
+
+  .ligne__nom small {
+    margin-left: var(--space-3xs);
+    font-size: var(--text-sm);
+    opacity: 0.75;
+    white-space: nowrap;
+  }
+
+  .ligne__pointilles {
+    flex: 1 1 var(--space-lg);
+    min-width: var(--space-sm);
+    border-bottom: 2px dotted var(--color-leader);
+    transform: translateY(-0.3em);
+  }
+
+  .ligne__prix {
+    flex: none;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+</style>

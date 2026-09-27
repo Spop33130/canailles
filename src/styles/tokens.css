@@ -1,0 +1,82 @@
+/* Hallmark · macrostructure: Photographic (adapté) · tone: bistrot à caractère · anchor hue: bordeaux 24°
+ * theme: custom · vibe: "crème de devanture, bordeaux de logo, crayon bleu de carte"
+ * paper oklch(96.4% 0.031 107) · accent oklch(34.2% 0.094 24.3) · display Anton · body Newsreader
+ * axes: light / display-condensed / warm
+ * nav: N12 bannière + barre · footer: Ft1 mast-headed · CTA: C4 barre fixe (mobile)
+ * H6 knobs: image=16/7 bord à bord, légende=lower-left, texte dessous
+ */
+
+/* Toutes les couleurs, polices et mesures du site passent par ici.
+   Les composants n'ont le droit qu'aux var(--…) : si une valeur manque,
+   on l'ajoute dans ce fichier plutôt que de la taper en dur ailleurs. */
+
+:root {
+  /* Couleurs relevées directement sur le logo (fond crème, C bordeaux)
+     et sur la carte papier (le bleu des dessins au feutre). */
+  --color-paper: oklch(96.4% 0.031 107);
+  --color-paper-deep: oklch(92.8% 0.038 104);
+  --color-apricot: oklch(90.4% 0.054 79);
+  --color-ink: oklch(22.7% 0.033 26);
+  --color-ink-soft: oklch(40% 0.03 26);
+  --color-bordeaux: oklch(34.2% 0.094 24.3);
+  --color-bordeaux-deep: oklch(27% 0.08 24);
+  --color-cobalt: oklch(43% 0.164 269);
+  --color-on-bordeaux: var(--color-paper);
+  --color-rule: oklch(34.2% 0.094 24.3 / 0.22);
+  --color-rule-strong: oklch(34.2% 0.094 24.3 / 0.5);
+  --color-leader: oklch(34.2% 0.094 24.3 / 0.35);
+  --color-leader-on-bordeaux: oklch(96.4% 0.031 107 / 0.4);
+  --color-focus: var(--color-cobalt);
+  --color-open: oklch(52% 0.13 150);
+  --color-closed: oklch(55.1% 0.188 22.8);
+
+  /* Anton pour tout ce qui se lit de loin (le même dessin condensé que
+     le C du logo), Newsreader pour ce qui se lit à table. */
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "Newsreader Variable", "Georgia", serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.125rem;
+  --text-lg: 1.3125rem;
+  --text-xl: 1.625rem;
+  --text-2xl: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  --text-3xl: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  --text-4xl: clamp(2.75rem, 1.6rem + 5vw, 5.5rem);
+  --text-display: clamp(3.25rem, 1.4rem + 8.5vw, 9rem);
+
+  --leading-tight: 0.95;
+  --leading-snug: 1.2;
+  --leading-body: 1.55;
+  --tracking-caps: 0.14em;
+
+  /* Échelle en pas de 4 px. */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 7rem;
+
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --measure: 34rem;
+  --page-max: 90rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.75rem;
+
+  --rule-thin: 1px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 360ms;
+
+  /* Hauteurs de l'en-tête, reprises par le décalage des ancres. */
+  --banner-h: 2.5rem;
+  --bar-h: 4.25rem;
+  --dock-h: 4.5rem;
+}

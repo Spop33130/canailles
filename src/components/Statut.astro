@@ -1,0 +1,120 @@
+---
+// Petite pastille « Ouvert — jusqu'à 20 h » calculée à l'heure de Paris.
+// Sans JavaScript elle reste vide et invisible : le tableau des horaires
+// de la section « Venir » suffit, on n'affiche jamais une info fausse.
+import { horaires } from '../data/maison';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+// Dimanche d'abord, pour coller à Date.getDay() côté navigateur.
+const semaine = [horaires[6], ...horaires.slice(0, 6)].map((h) => ({
+  jour: h.jour,
+  creneau: h.creneau,
+}));
+---
+
+<p class:list={['statut', classe]} data-statut data-semaine={JSON.stringify(semaine)} aria-live="polite"></p>
+
+<script>
+  type Creneau = { ouvre: string; ferme: string } | null;
+  type Jour = { jour: string; creneau: Creneau };
+
+  const enMinutes = (hhmm: string) => {
+    const [h, m] = hhmm.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  const lisible = (minutes: number) => {
+    const h = Math.floor(minutes / 60) % 24;
+    const m = minutes % 60;
+    return m ? `${h}\u00a0h\u00a0${String(m).padStart(2, '0')}` : `${h}\u00a0h`;
+  };
+
+  // Jour de la semaine et minute courante vus depuis Bègles, quel que soit
+  // le fuseau du téléphone qui consulte la page.
+  const maintenantAParis = () => {
+    const morceaux = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Paris',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const valeur = (type: string) => morceaux.find((p) => p.type === type)?.value ?? '';
+    const jours = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return {
+      jour: jours.indexOf(valeur('weekday')),
+      minute: Number(valeur('hour')) * 60 + Number(valeur('minute')),
+    };
+  };
+
+  const calculer = (semaine: Jour[]) => {
+    const { jour, minute } = maintenantAParis();
+
+    // La veille d'abord : le jeudi court jusqu'à 1 h du vendredi.
+    const veille = semaine[(jour + 6) % 7].creneau;
+    if (veille && enMinutes(veille.ferme) > 1440 && minute < enMinutes(veille.ferme) - 1440) {
+      return { ouvert: true, texte: `Ouvert — jusqu’à ${lisible(enMinutes(veille.ferme))}` };
+    }
+
+    const aujourdhui = semaine[jour].creneau;
+    if (aujourdhui && minute >= enMinutes(aujourdhui.ouvre) && minute < enMinutes(aujourdhui.ferme)) {
+      return { ouvert: true, texte: `Ouvert — jusqu’à ${lisible(enMinutes(aujourdhui.ferme))}` };
+    }
+    if (aujourdhui && minute < enMinutes(aujourdhui.ouvre)) {
+      return { ouvert: false, texte: `Fermé — ouvre à ${lisible(enMinutes(aujourdhui.ouvre))}` };
+    }
+
+    // Sinon on cherche le prochain jour ouvert.
+    for (let decalage = 1; decalage <= 7; decalage++) {
+      const suivant = semaine[(jour + decalage) % 7];
+      if (suivant.creneau) {
+        const quand = decalage === 1 ? 'demain' : suivant.jour.toLowerCase();
+        return { ouvert: false, texte: `Fermé — ouvre ${quand} à ${lisible(enMinutes(suivant.creneau.ouvre))}` };
+      }
+    }
+    return null;
+  };
+
+  const afficher = () => {
+    document.querySelectorAll<HTMLElement>('[data-statut]').forEach((el) => {
+      const resultat = calculer(JSON.parse(el.dataset.semaine ?? '[]'));
+      if (!resultat) return;
+      el.textContent = resultat.texte;
+      el.dataset.ouvert = String(resultat.ouvert);
+    });
+  };
+
+  afficher();
+  // Une page laissée ouverte sur un onglet doit basculer à l'heure pile.
+  setInterval(afficher, 60_000);
+</script>
+
+<style>
+  .statut {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .statut:empty {
+    display: none;
+  }
+
+  .statut::before {
+    content: "";
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50%;
+    background: var(--color-closed);
+  }
+
+  .statut[data-ouvert="true"]::before {
+    background: var(--color-open);
+  }
+</style>

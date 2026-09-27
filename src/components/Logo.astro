@@ -1,0 +1,31 @@
+---
+// Le logo « Les C — Repère de canailles », détouré en un masque d'une seule
+// couleur : il prend la couleur du texte autour de lui (bordeaux sur crème
+// dans l'en-tête, crème sur bordeaux dans le pied de page).
+import logo from '../assets/brand/logo-canailles.png';
+
+interface Props {
+  class?: string;
+}
+
+const { class: classe } = Astro.props;
+---
+
+<span
+  class:list={['logo', classe]}
+  role="img"
+  aria-label="Les Canailles — Repère de canailles"
+  style={`--logo-masque: url(${logo.src}); --logo-ratio: ${logo.width} / ${logo.height};`}
+></span>
+
+<style>
+  /* inline-block : la largeur se déduit de la hauteur via aspect-ratio. */
+  .logo {
+    display: inline-block;
+    vertical-align: top;
+    aspect-ratio: var(--logo-ratio);
+    background-color: currentColor;
+    -webkit-mask: var(--logo-masque) center / contain no-repeat;
+    mask: var(--logo-masque) center / contain no-repeat;
+  }
+</style>

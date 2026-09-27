@@ -1,0 +1,117 @@
+---
+// Ce qu'en disent les autres. La citation est un avis client publié par
+// les Canailles sur Instagram ; la note Google et le nombre d'avis ont été
+// relevés sur leur fiche en septembre 2026 — à rafraîchir de temps en temps,
+// tout comme l'année du guide.
+import { maison } from '../data/maison';
+---
+
+<section class="avis page" aria-labelledby="avis-titre">
+  <h2 id="avis-titre" class="visually-hidden">Ce qu’en disent les clients</h2>
+  <figure class="avis__citation">
+    <blockquote>
+      <p>Très bonne carte maison, personnel très accueillant qui met à l’aise, rien à redire, ne changez rien&nbsp;!</p>
+    </blockquote>
+    <figcaption class="petites-caps">Juliette, cliente</figcaption>
+  </figure>
+
+  <ul class="avis__preuves">
+    <li>
+      <a href={maison.gaultMillau} rel="noopener">
+        <strong>Gault&amp;Millau 2026</strong>
+        <span>Bistrot référencé au guide</span>
+      </a>
+    </li>
+    <li>
+      <strong>4,8 sur 5</strong>
+      <span>147 avis Google, septembre 2026</span>
+    </li>
+  </ul>
+</section>
+
+<style>
+  .avis {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: end;
+    padding-block: var(--space-3xl);
+  }
+
+  .avis__citation {
+    margin: 0;
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .avis__citation blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    line-height: 1.02;
+    text-transform: uppercase;
+    color: var(--color-bordeaux);
+    overflow-wrap: anywhere;
+  }
+
+  .avis__citation blockquote p::before {
+    content: "« ";
+    color: var(--color-cobalt);
+  }
+
+  .avis__citation blockquote p::after {
+    content: " »";
+    color: var(--color-cobalt);
+  }
+
+  .avis__citation figcaption {
+    color: var(--color-ink-soft);
+  }
+
+  .avis__preuves {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .avis__preuves li,
+  .avis__preuves a {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .avis__preuves li {
+    padding-top: var(--space-sm);
+    border-top: var(--rule-thin) solid var(--color-rule-strong);
+  }
+
+  .avis__preuves a {
+    text-decoration: none;
+  }
+
+  .avis__preuves a:hover strong {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+
+  .avis__preuves strong {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--color-bordeaux);
+    text-underline-offset: 0.15em;
+  }
+
+  .avis__preuves span {
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft);
+  }
+
+  @media (max-width: 47.99rem) {
+    .avis {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding-block: var(--space-2xl);
+    }
+  }
+</style>

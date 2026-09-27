@@ -1,0 +1,186 @@
+---
+// En-tête fixe en deux étages : la bannière bordeaux du menu du jour, puis
+// la barre de navigation. Quand on descend, tout l'en-tête remonte de la
+// hauteur de la bannière (elle disparaît, la barre reste) ; quand on
+// remonte, la bannière revient.
+import Logo from './Logo.astro';
+import Icone from './Icone.astro';
+import { maison } from '../data/maison';
+import { menuDuJour } from '../data/carte';
+---
+
+<header class="entete" data-entete>
+  <p class="entete__banniere">
+    <a href="/#carte">
+      <span class="entete__banniere-long">Menu du jour à {menuDuJour.prix} € — entrée ou dessert, et le plat du jour. {menuDuJour.quand}.</span>
+      <span class="entete__banniere-court">Menu du jour {menuDuJour.prix} € · semaine midi</span>
+    </a>
+  </p>
+  <div class="entete__barre">
+    <div class="entete__interieur page">
+      <a class="entete__marque" href="/" aria-label="Les Canailles, accueil">
+        <Logo class="entete__logo" />
+      </a>
+      <nav class="entete__liens" aria-label="Sections">
+        <a href="/#carte">La carte</a>
+        <a href="/#maison">La maison</a>
+        <a href="/#venir">Venir</a>
+      </nav>
+      <a class="bouton bouton--plein entete__appel" href={maison.telephone.lien}>
+        <Icone nom="telephone" />
+        {maison.telephone.affiche}
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Repli de la bannière : on ne regarde que le sens du défilement, et on
+  // garde tout affiché tant qu'on est tout en haut de la page.
+  const entete = document.querySelector<HTMLElement>('[data-entete]');
+  if (entete) {
+    let dernierY = window.scrollY;
+    let enAttente = false;
+
+    const mettreAJour = () => {
+      const y = window.scrollY;
+      if (y < 48) entete.classList.remove('est-replie');
+      else if (y > dernierY + 4) entete.classList.add('est-replie');
+      else if (y < dernierY - 4) entete.classList.remove('est-replie');
+      entete.classList.toggle('a-defile', y > 8);
+      dernierY = y;
+      enAttente = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!enAttente) {
+          enAttente = true;
+          requestAnimationFrame(mettreAJour);
+        }
+      },
+      { passive: true },
+    );
+    mettreAJour();
+  }
+</script>
+
+<style>
+  .entete {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  .entete.est-replie {
+    transform: translateY(calc(var(--banner-h) * -1));
+  }
+
+  .entete__banniere {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--banner-h);
+    padding-inline: var(--gutter);
+    background: var(--color-bordeaux);
+    color: var(--color-on-bordeaux);
+    font-size: var(--text-sm);
+    text-align: center;
+  }
+
+  .entete__banniere a {
+    overflow: hidden;
+    text-decoration: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .entete__banniere a:hover {
+    text-decoration: underline;
+  }
+
+  .entete__banniere-court {
+    display: none;
+  }
+
+  .entete__barre {
+    height: var(--bar-h);
+    background: var(--color-paper);
+    border-bottom: var(--rule-thin) solid transparent;
+    transition: border-color var(--dur-base) var(--ease-out);
+  }
+
+  .entete.a-defile .entete__barre {
+    border-bottom-color: var(--color-rule);
+  }
+
+  .entete__interieur {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    height: 100%;
+  }
+
+  .entete__marque {
+    color: var(--color-bordeaux);
+    flex: none;
+  }
+
+  .entete__marque :global(.entete__logo) {
+    height: calc(var(--bar-h) - var(--space-xs));
+  }
+
+  .entete__liens {
+    display: flex;
+    gap: var(--space-lg);
+    margin-inline-start: auto;
+  }
+
+  .entete__liens a {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--color-bordeaux);
+    background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+    transition: background-size var(--dur-base) var(--ease-out);
+  }
+
+  .entete__liens a:hover {
+    background-size: 100% 2px;
+  }
+
+  @media (max-width: 47.99rem) {
+    .entete__banniere-long {
+      display: none;
+    }
+
+    .entete__banniere-court {
+      display: inline;
+    }
+
+    /* Sur téléphone, l'appel vit dans la barre du bas : on garde ici
+       uniquement le logo et les trois ancres. */
+    .entete__appel {
+      display: none;
+    }
+
+    .entete__liens {
+      gap: var(--space-md);
+    }
+  }
+
+  @media (max-width: 22rem) {
+    .entete__liens {
+      gap: var(--space-sm);
+    }
+
+    .entete__liens a {
+      font-size: var(--text-sm);
+    }
+  }
+</style>

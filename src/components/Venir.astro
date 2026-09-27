@@ -1,0 +1,179 @@
+---
+// Venir : l'adresse, les deux boutons qui comptent (appeler, y aller) et
+// les horaires, avec le jour courant souligné par le script de la page.
+import Icone from './Icone.astro';
+import Statut from './Statut.astro';
+import { maison, horaires, heureLisible } from '../data/maison';
+---
+
+<section class="venir" id="venir" aria-labelledby="venir-titre">
+  <div class="venir__interieur page">
+    <div class="venir__adresse">
+      <h2 id="venir-titre">Venir</h2>
+      <address>
+        <span>{maison.adresse.rue}</span>
+        <span>{maison.adresse.codePostal} {maison.adresse.ville}</span>
+      </address>
+      <p class="venir__reperes">{maison.reperes}.</p>
+      <p class="venir__reserver">
+        Pour réserver une table, un coup de fil suffit&nbsp;:{' '}
+        <a href={maison.telephone.lien}>{maison.telephone.affiche}</a>
+      </p>
+      <div class="venir__actions">
+        <a class="bouton bouton--plein venir__doublon" href={maison.telephone.lien}>
+          <Icone nom="telephone" /> Appeler
+        </a>
+        <a class="bouton bouton--contour venir__doublon" href={maison.itineraire} rel="noopener">
+          <Icone nom="itineraire" /> Itinéraire
+        </a>
+        <a class="bouton bouton--contour" href={maison.instagram.url} rel="noopener">
+          <Icone nom="instagram" /> Instagram
+        </a>
+      </div>
+    </div>
+
+    <div class="venir__horaires">
+      <h3>Horaires</h3>
+      <Statut class="venir__statut" />
+      <table>
+        <caption class="visually-hidden">Horaires d’ouverture, du lundi au dimanche</caption>
+        <tbody>
+          {
+            horaires.map((h) => (
+              <tr data-jour={h.code}>
+                <th scope="row">{h.jour}</th>
+                <td>
+                  {h.creneau
+                    ? `${heureLisible(h.creneau.ouvre)} – ${heureLisible(h.creneau.ferme)}`
+                    : 'Fermé'}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Surligne la ligne du jour, vu depuis Paris.
+  const jour = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', weekday: 'long' }).format(new Date());
+  document.querySelector(`.venir tr[data-jour="${jour}"]`)?.classList.add('est-aujourdhui');
+</script>
+
+<style>
+  .venir {
+    padding-block: var(--space-3xl);
+  }
+
+  .venir__interieur {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-2xl);
+  }
+
+  .venir__adresse {
+    display: grid;
+    align-content: start;
+    gap: var(--space-md);
+  }
+
+  .venir h2 {
+    font-size: var(--text-display);
+    line-height: 0.85;
+  }
+
+  .venir address {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-style: normal;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--color-bordeaux);
+  }
+
+  .venir__reperes,
+  .venir__reserver {
+    max-width: var(--measure);
+  }
+
+  .venir__reserver a {
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-bordeaux);
+  }
+
+  .venir__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-2xs);
+  }
+
+  .venir__horaires {
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border: var(--rule-thin) solid var(--color-rule-strong);
+    border-radius: var(--radius-md);
+  }
+
+  .venir h3 {
+    font-size: var(--text-2xl);
+  }
+
+  .venir table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-lg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .venir th,
+  .venir td {
+    padding-block: var(--space-2xs);
+    border-top: var(--rule-thin) solid var(--color-rule);
+    text-align: left;
+    font-weight: 400;
+  }
+
+  .venir td {
+    text-align: right;
+  }
+
+  .venir tr:global(.est-aujourdhui) th,
+  .venir tr:global(.est-aujourdhui) td {
+    font-weight: 700;
+    color: var(--color-bordeaux);
+  }
+
+  .venir tr:global(.est-aujourdhui) th::after {
+    content: " · aujourd’hui";
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-cobalt);
+  }
+
+  @media (max-width: 47.99rem) {
+    .venir {
+      padding-block: var(--space-2xl);
+    }
+
+    .venir__interieur {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+
+    .venir__horaires {
+      padding: var(--space-md);
+    }
+
+    /* Appeler et Itinéraire sont déjà dans la barre fixe du bas. */
+    .venir__doublon {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+// Barre fixe en bas de l'écran, sur téléphone uniquement : c'est là qu'on
+// réserve (par téléphone) et qu'on trouve le chemin, à portée de pouce.
+import Icone from './Icone.astro';
+import { maison } from '../data/maison';
+---
+
+<aside class="barre-appel" aria-label="Réserver ou venir">
+  <a class="bouton bouton--plein" href={maison.telephone.lien}>
+    <Icone nom="telephone" /> Appeler
+  </a>
+  <a class="bouton bouton--contour" href={maison.itineraire} rel="noopener">
+    <Icone nom="itineraire" /> Itinéraire
+  </a>
+</aside>
+
+<style>
+  .barre-appel {
+    display: none;
+  }
+
+  @media (max-width: 47.99rem) {
+    .barre-appel {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2xs);
+      min-height: var(--dock-h);
+      padding: var(--space-xs) var(--gutter);
+      padding-bottom: max(var(--space-xs), env(safe-area-inset-bottom));
+      background: var(--color-paper);
+      border-top: var(--rule-thin) solid var(--color-rule);
+    }
+
+    /* La page doit pouvoir défiler jusqu'au bout sans passer sous la barre. */
+    :global(body) {
+      padding-bottom: var(--dock-h);
+    }
+  }
+</style>

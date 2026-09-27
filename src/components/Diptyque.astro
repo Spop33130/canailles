@@ -1,0 +1,55 @@
+---
+// Deux assiettes côte à côte, sans légende : après la carte, on montre.
+// Sur téléphone elles s'empilent.
+import { Picture } from 'astro:assets';
+import salade from '../assets/photos/04-salade-tomates.jpg';
+import assiette from '../assets/photos/05-assiette-grillee.jpg';
+
+const photos = [
+  {
+    src: salade,
+    alt: 'Salade de tomates, rondelles d’oignon et fromage frais, filet de balsamique, sur une table en bois au soleil.',
+  },
+  {
+    src: assiette,
+    alt: 'Assiette grillée, tomates, oignons et herbes fraîches dans un filet d’huile d’olive.',
+  },
+];
+---
+
+<div class="diptyque">
+  {
+    photos.map((photo) => (
+      <Picture
+        src={photo.src}
+        formats={['avif', 'webp']}
+        widths={[640, 1000]}
+        sizes="(max-width: 48rem) 100vw, 50vw"
+        alt={photo.alt}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .diptyque {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2xs);
+    max-width: var(--page-max);
+    margin-inline: auto;
+  }
+
+  .diptyque :global(img) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3.6;
+    object-fit: cover;
+  }
+
+  @media (max-width: 47.99rem) {
+    .diptyque {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

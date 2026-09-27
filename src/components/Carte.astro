@@ -1,0 +1,285 @@
+---
+// La carte complète, composée en texte plutôt qu'en image : lisible sur
+// téléphone, indexable, et modifiable en deux secondes dans src/data/carte.ts.
+import LignePlat from './LignePlat.astro';
+import {
+  menuDuJour,
+  entrees,
+  plats,
+  specialites,
+  desserts,
+  boules,
+  cafesArroses,
+  prixLisible,
+} from '../data/carte';
+---
+
+<section class="carte" id="carte" aria-labelledby="carte-titre">
+  <div class="page">
+    <header class="carte__tete">
+      <h2 id="carte-titre">La carte</h2>
+      <p>Prix en euros, service compris. Le plat du jour s’écrit à la craie, sur l’ardoise de la vitrine.</p>
+    </header>
+
+    <article class="carte__menu-jour" aria-labelledby="menu-jour-titre">
+      <h3 id="menu-jour-titre">Menu du jour <span>{menuDuJour.prix}&nbsp;€</span></h3>
+      <div class="carte__menu-jour-choix">
+        <div>
+          <p class="petites-caps">Entrée</p>
+          <ul>{menuDuJour.entrees.map((nom) => <li>{nom}</li>)}</ul>
+        </div>
+        <p class="carte__ou" aria-label="ou">ou</p>
+        <div>
+          <p class="petites-caps">Dessert</p>
+          <ul>{menuDuJour.desserts.map((nom) => <li>{nom}</li>)}</ul>
+        </div>
+        <p class="carte__plus">+ le plat du jour</p>
+      </div>
+      <p class="carte__quand">{menuDuJour.quand}.</p>
+    </article>
+
+    <div class="carte__grille">
+      <section aria-labelledby="entrees-titre">
+        <h3 id="entrees-titre">Entrées</h3>
+        <ul class="carte__liste">
+          {entrees.map((plat) => <LignePlat {...plat} />)}
+        </ul>
+      </section>
+
+      <section aria-labelledby="plats-titre">
+        <h3 id="plats-titre">Plats</h3>
+        <ul class="carte__liste">
+          {plats.map((plat) => <LignePlat {...plat} />)}
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <section class="carte__specialites" aria-labelledby="specialites-titre">
+    <div class="page">
+      <h3 id="specialites-titre">Les spécialités</h3>
+      <div class="carte__specialites-grille">
+        {
+          specialites.map((specialite) => (
+            <div class="carte__specialite">
+              <h4>
+                {specialite.nom}
+                {specialite.precision && <small>{specialite.precision}</small>}
+              </h4>
+              {'prix' in specialite ? (
+                <p class="carte__prix-seul">{prixLisible(specialite.prix)}&nbsp;€</p>
+              ) : (
+                <ul class="carte__liste">
+                  {specialite.variantes.map((variante) => (
+                    <LignePlat {...variante} />
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="page">
+    <div class="carte__grille">
+      <section aria-labelledby="desserts-titre">
+        <h3 id="desserts-titre">Desserts</h3>
+        <ul class="carte__liste">
+          {desserts.map((plat) => <LignePlat {...plat} />)}
+        </ul>
+      </section>
+
+      <section aria-labelledby="glaces-titre">
+        <h3 id="glaces-titre">Glaces &amp; sorbets</h3>
+        <ul class="carte__liste">
+          <LignePlat nom="La boule" prix={boules.prix} />
+        </ul>
+        <p class="carte__parfums"><span class="petites-caps">Sorbets</span> {boules.sorbets.join(', ')}.</p>
+        <p class="carte__parfums"><span class="petites-caps">Glaces</span> {boules.glaces.join(', ')}.</p>
+
+        <h3 class="carte__sous-titre">Cafés arrosés</h3>
+        <ul class="carte__liste">
+          <LignePlat nom={cafesArroses.noms.join(', ')} prix={cafesArroses.prix} />
+        </ul>
+      </section>
+    </div>
+  </div>
+</section>
+
+<style>
+  .carte {
+    padding-block: var(--space-2xl) var(--space-3xl);
+    background: var(--color-paper-deep);
+  }
+
+  .carte__tete {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-sm) var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .carte__tete h2 {
+    font-size: var(--text-display);
+    line-height: 0.85;
+  }
+
+  .carte__tete p {
+    max-width: 24rem;
+    color: var(--color-ink-soft);
+  }
+
+  .carte h3 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-md);
+  }
+
+  /* L'encadré abricot, repris tel quel de la carte papier. */
+  .carte__menu-jour {
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-xl);
+    background: var(--color-apricot);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .carte__menu-jour h3 {
+    margin: 0;
+  }
+
+  .carte__menu-jour h3 span {
+    color: var(--color-cobalt);
+  }
+
+  .carte__menu-jour-choix {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-md) var(--space-lg);
+    align-items: center;
+  }
+
+  .carte__menu-jour-choix .petites-caps {
+    color: var(--color-cobalt);
+    margin-bottom: var(--space-3xs);
+  }
+
+  .carte__ou,
+  .carte__plus {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    text-transform: uppercase;
+    color: var(--color-cobalt);
+  }
+
+  .carte__quand {
+    font-weight: 500;
+  }
+
+  .carte__grille {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2xl) var(--space-3xl);
+  }
+
+  .carte__liste {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  /* Bande bordeaux : le cœur de la maison, mis à part du reste. */
+  .carte__specialites {
+    margin-block: var(--space-2xl);
+    padding-block: var(--space-2xl);
+    background: var(--color-bordeaux);
+    color: var(--color-on-bordeaux);
+    --color-leader: var(--color-leader-on-bordeaux);
+  }
+
+  .carte__specialites h3,
+  .carte__specialites h4 {
+    color: var(--color-on-bordeaux);
+  }
+
+  .carte__specialites h3 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .carte__specialites-grille {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-xl) var(--space-2xl);
+  }
+
+  .carte__specialite h4 {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-2xs);
+    border-bottom: var(--rule-thin) solid currentColor;
+  }
+
+  .carte__specialite h4 small {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    text-transform: none;
+  }
+
+  .carte__prix-seul {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .carte__parfums {
+    margin-top: var(--space-sm);
+    color: var(--color-ink-soft);
+  }
+
+  .carte__parfums .petites-caps {
+    color: var(--color-cobalt);
+    margin-right: var(--space-3xs);
+  }
+
+  .carte__sous-titre {
+    margin-top: var(--space-xl);
+  }
+
+  @media (max-width: 63.99rem) {
+    .carte__specialites-grille {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .carte {
+      padding-block: var(--space-xl) var(--space-2xl);
+    }
+
+    .carte__menu-jour {
+      padding: var(--space-md);
+    }
+
+    .carte__menu-jour-choix,
+    .carte__grille,
+    .carte__specialites-grille {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .carte__menu-jour-choix {
+      gap: var(--space-xs);
+    }
+
+    .carte__grille {
+      gap: var(--space-xl);
+    }
+  }
+</style>

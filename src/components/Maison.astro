@@ -1,0 +1,115 @@
+---
+// « La maison » : qui tient le bistrot, ce qu'on y mange, où l'on s'assoit.
+// Les trois lignes en grand sont reprises mot pour mot d'une publication
+// Instagram des Canailles (juillet 2026) — c'est leur voix, pas la nôtre.
+// Les faits sur la cuisine et le lieu viennent de la fiche Gault&Millau 2026.
+const lignes = ['Des tables qui vivent.', 'Des verres qui s’entrechoquent.', 'Des éclats de rire.'];
+---
+
+<section class="maison page" id="maison" aria-labelledby="maison-titre">
+  <p class="maison__lignes">
+    {lignes.map((ligne) => <span>{ligne}</span>)}
+  </p>
+
+  <div class="maison__corps">
+    <h2 id="maison-titre">Une mère, un fils, un bistrot</h2>
+
+    <div class="maison__colonnes">
+      <div>
+        <h3>Dans l’assiette</h3>
+        <p>
+          Khadija et son fils Sabri ont imaginé un bistrot à la française qui vous reçoit du café du matin jusqu’à
+          l’apéritif. En cuisine, des produits frais de saison&nbsp;: une épaule de porcelet cuite au court-bouillon
+          puis rôtie au four, une entrecôte de 430&nbsp;g, une dorade servie entière.
+        </p>
+        <p>
+          Et les plats que la cheffe tient de ses origines marocaines — tajines et couscous, dont un tajine de morue
+          aux olives vertes, au citron confit et à la coriandre.
+        </p>
+      </div>
+      <div>
+        <h3>Autour de la table</h3>
+        <p>
+          On mange sur de grandes tables familiales&nbsp;: en salle, dans le patio ouvert toute l’année, ou en
+          terrasse, côté Bègles ou côté Bordeaux. Aux murs, les maillots de l’UBB, dont une partie du staff vient
+          déjeuner le vendredi midi.
+        </p>
+        <p>
+          Dans les verres, une sélection de vins bio pensée pour les poissons et les viandes, des whiskys, des rhums
+          et des digestifs français.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .maison {
+    display: grid;
+    gap: var(--space-2xl);
+    padding-block: var(--space-2xl) var(--space-3xl);
+    border-top: var(--rule-thin) solid var(--color-rule);
+  }
+
+  /* Les trois lignes façon affiche : même typo que le C du logo. */
+  .maison__lignes {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    line-height: 1.02;
+    text-transform: uppercase;
+    color: var(--color-bordeaux);
+    overflow-wrap: anywhere;
+  }
+
+  .maison__lignes span:nth-child(2) {
+    padding-left: 8%;
+    color: var(--color-cobalt);
+  }
+
+  .maison__lignes span:nth-child(3) {
+    padding-left: 16%;
+  }
+
+  .maison__corps {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .maison__corps h2 {
+    font-size: var(--text-3xl);
+  }
+
+  .maison__colonnes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xl) var(--space-2xl);
+  }
+
+  .maison__colonnes > div {
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+    max-width: var(--measure);
+  }
+
+  .maison__colonnes h3 {
+    font-size: var(--text-xl);
+    color: var(--color-cobalt);
+  }
+
+  @media (max-width: 47.99rem) {
+    .maison {
+      gap: var(--space-xl);
+      padding-block: var(--space-xl) var(--space-2xl);
+    }
+
+    .maison__colonnes {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .maison__lignes span:nth-child(n) {
+      padding-left: 0;
+    }
+  }
+</style>

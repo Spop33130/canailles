@@ -1,0 +1,83 @@
+---
+// Squelette commun aux deux pages : balises <head>, polices auto-hébergées,
+// données structurées pour Google et feuille de style globale.
+import '@fontsource/anton/400.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '../styles/global.css';
+import { maison, horaires } from '../data/maison';
+
+interface Props {
+  titre: string;
+  description: string;
+  // Les mentions légales n'ont rien à faire dans les résultats de recherche.
+  indexer?: boolean;
+}
+
+const { titre, description, indexer = true } = Astro.props;
+const canonique = new URL(Astro.url.pathname, Astro.site);
+const imagePartage = new URL('/og-canailles.jpg', Astro.site);
+
+// Fiche « Restaurant » lue par Google : adresse, téléphone, horaires.
+// Le jeudi ferme à 1 h, ce que schema.org note simplement « 01:00 ».
+const donneesStructurees = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: maison.nom,
+  slogan: maison.devise,
+  url: Astro.site?.href,
+  image: imagePartage.href,
+  telephone: maison.telephone.international,
+  servesCuisine: ['Française', 'Marocaine'],
+  priceRange: '€€',
+  hasMenu: new URL('/#carte', Astro.site).href,
+  acceptsReservations: 'True',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: maison.adresse.rue,
+    postalCode: maison.adresse.codePostal,
+    addressLocality: maison.adresse.ville,
+    addressCountry: 'FR',
+  },
+  sameAs: [maison.instagram.url],
+  openingHoursSpecification: horaires
+    .filter((h) => h.creneau)
+    .map((h) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: `https://schema.org/${h.code}`,
+      opens: h.creneau!.ouvre,
+      closes: h.creneau!.ferme === '25:00' ? '01:00' : h.creneau!.ferme,
+    })),
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titre}</title>
+    <meta name="description" content={description} />
+    {!indexer && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonique} />
+    <!-- Une balise meta ne lit pas les variables CSS : c'est --color-paper en hexadécimal. -->
+    <meta name="theme-color" content="#f5f5dd" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={maison.nom} />
+    <meta property="og:title" content={titre} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:image" content={imagePartage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {indexer && <script type="application/ld+json" set:html={JSON.stringify(donneesStructurees)} />}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,46 @@
+---
+// Page unique du site : on alterne photo pleine largeur et bande de texte,
+// la carte au milieu, l'adresse à la fin.
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Accueil from '../components/Accueil.astro';
+import Maison from '../components/Maison.astro';
+import Photo from '../components/Photo.astro';
+import Carte from '../components/Carte.astro';
+import Diptyque from '../components/Diptyque.astro';
+import Avis from '../components/Avis.astro';
+import Venir from '../components/Venir.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+import BarreAppel from '../components/BarreAppel.astro';
+import platRoti from '../assets/photos/03-plat-viande-rotie.jpg';
+import comptoir from '../assets/photos/02-comptoir.jpg';
+---
+
+<Base
+  titre="Les Canailles — bistrot à Bègles"
+  description="Bistrot à la française tenu par Khadija et son fils Sabri, boulevard Jean-Jacques Bosc à Bègles. Menu du jour à 15 €, tajines et couscous, terrasse et patio. Au guide Gault&Millau 2026."
+>
+  <EnTete />
+  <main>
+    <Accueil />
+    <Maison />
+    <Photo
+      src={platRoti}
+      cadrage="50% 45%"
+      legende="À table, côté soleil"
+      alt="Pièce de viande rôtie nappée de sauce, pommes de terre sautées et salade, avec un verre de vin rouge, sur une table en bois."
+    />
+    <Carte />
+    <Diptyque />
+    <Avis />
+    <Photo
+      src={comptoir}
+      cadrage="50% 35%"
+      legende="Au comptoir"
+      alt="Derrière le comptoir en bois, un homme en chemise blanche sourit à deux clients ; verres et bouteilles alignés sur les étagères."
+    />
+    <Venir />
+  </main>
+  <PiedDePage />
+  <BarreAppel />
+</Base>
